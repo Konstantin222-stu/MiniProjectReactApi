@@ -1,0 +1,37 @@
+.footer{
+    background-color: #E8EAEF;
+}
+.footer__content {
+    display: flex;
+    justify-content: space-between;
+    padding: 80px 0;
+}
+.footer__info {
+    max-width: 400px;
+}
+.footer__info > img {
+    margin-bottom: 20px;
+}
+.footer__contact > .title {
+    margin-bottom: 25px;
+}
+.footer-contacts__list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 50px;
+}
+
+.footer-contacts__item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.footer__pages > .title {
+    margin-bottom: 25px;
+}
+.footer-pages__list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
