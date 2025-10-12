@@ -49,11 +49,17 @@ const Products = sequelize.define('Products', {
     },
     title: DataTypes.STRING(30),
     price: DataTypes.INTEGER,
-    size: DataTypes.ARRAY,
+     size: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    },
     reviews: DataTypes.INTEGER,
     desc: DataTypes.STRING(200),
     stars:DataTypes.INTEGER,
-    tags:DataTypes.ARRAY,
+    tags: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    },
     category: DataTypes.STRING(30),
     
 }, { 

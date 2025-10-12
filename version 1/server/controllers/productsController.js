@@ -1,46 +1,29 @@
-const { Type, Exercise } = require("../models/");
+const { Products } = require("../models/");
+const uuid = require("uuid")
+const path = require("path");
+const fs = require("fs");
 const ApiError = require("../error");
 
-class TypeController {
+class ProductsController {
   async get(req, res, next) {
     try {
-      const { includeExercises } = req.query;
-      
-      const includeOptions = includeExercises === 'true' ? [{
-        model: Exercise,
-        as: 'Exercises',
-        attributes: ['id_exercise', 'name_exercise'],
-        required: false
-      }] : [];
-
-      const types = await Type.findAll({
-        order: [['id_type', 'ASC']],
-        include: includeOptions
-      });
-
-      return res.json(types);
+      const products = await Products.findAll();
+      return res.json(products);
     } catch (err) {
       next(ApiError.internal(err.message));
     }
   }
 
-  async getID(req, res, next) {
+  async getID(req, res, next) { 
     try {
       const { id } = req.params;
-      const type = await Type.findByPk(id, {
-        include: [{
-          model: Exercise,
-          as: 'Exercises',
-          attributes: ['id_exercise', 'name_exercise'],
-          required: false
-        }]
-      });
+      const product = await Products.findByPk(id);
 
-      if (!type) {
-        return next(ApiError.notFound('Тип упражнения не найден'));
+      if (!product) {
+        return next(ApiError.notFound('Товар не найден'));
       }
 
-      return res.json(type);
+      return res.json(product);
     } catch (err) {
       next(ApiError.internal(err.message));
     }
@@ -48,18 +31,33 @@ class TypeController {
 
   async post(req, res, next) {
     try {
-      const { name_type } = req.body;
+      const { title, price, size, reviews, desc, stars, tags, category } = req.body;
+      let imagePath = null;
 
-      if (!name_type || name_type.trim().length === 0) {
-        return next(ApiError.badRequest('Название типа обязательно'));
+      if (req.files?.image) {
+        const { image } = req.files;
+        const fileName = uuid.v4() + path.extname(image.name);
+        imagePath = path.join('uploads', 'products', fileName);
+        await image.mv(path.resolve(__dirname, '..', imagePath));
+        imagePath = fileName;
       }
 
-      if (name_type.length > 50) {
-        return next(ApiError.badRequest('Название типа не должно превышать 50 символов'));
-      }
+      const parsedSize = typeof size === 'string' ? JSON.parse(size) : size;
+      const parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
 
-      const type = await Type.create({ name_type });
-      return res.status(201).json(type);
+      const product = await Products.create({
+        title: title || null,
+        price: price ? parseInt(price) : null,
+        size: parsedSize || [],
+        reviews: reviews ? parseInt(reviews) : 0,
+        desc: desc || null,
+        stars: stars ? parseInt(stars) : 0,
+        tags: parsedTags || [],
+        category: category || null,
+        image: imagePath 
+      });
+
+      return res.status(201).json(product);
     } catch (err) {
       next(ApiError.badRequest(err.message));
     }
@@ -68,23 +66,53 @@ class TypeController {
   async put(req, res, next) {
     try {
       const { id } = req.params;
-      const { name_type } = req.body;
-
-      if (!name_type || name_type.trim().length === 0) {
-        return next(ApiError.badRequest('Название типа обязательно'));
+      const product = await Products.findByPk(id);
+      
+      if (!product) {
+        return next(ApiError.notFound('Товар не найден'));
       }
 
-      if (name_type.length > 50) {
-        return next(ApiError.badRequest('Название типа не должно превышать 50 символов'));
+      const { title, price, size, reviews, desc, stars, tags, category } = req.body || {};
+      let imagePath = null;
+
+      
+      if (req.files?.image) {
+        if (product.image) {
+          const oldImagePath = path.resolve(__dirname, '..', 'uploads', 'products', product.image);
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+          }
+        }
+
+        const { image } = req.files;
+        const fileName = uuid.v4() + path.extname(image.name);
+        imagePath = path.join('uploads', 'products', fileName);
+        
+        await image.mv(path.resolve(__dirname, '..', imagePath));
+        imagePath = fileName;
       }
 
-      const type = await Type.findByPk(id);
-      if (!type) {
-        return next(ApiError.notFound('Тип упражнения не найден'));
+      const updateData = {};
+      
+      if (title !== undefined) updateData.title = title;
+      if (price !== undefined) updateData.price = parseInt(price);
+      if (size !== undefined) {
+        updateData.size = typeof size === 'string' ? JSON.parse(size) : size;
+      }
+      if (reviews !== undefined) updateData.reviews = parseInt(reviews);
+      if (desc !== undefined) updateData.desc = desc;
+      if (stars !== undefined) updateData.stars = parseInt(stars);
+      if (tags !== undefined) {
+        updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      }
+      if (category !== undefined) updateData.category = category;
+      if (imagePath !== null) updateData.image = imagePath;
+
+      if (Object.keys(updateData).length > 0) {
+        await product.update(updateData);
       }
 
-      await type.update({ name_type });
-      return res.json(type);
+      return res.json(product);
     } catch (err) {
       next(ApiError.badRequest(err.message));
     }
@@ -93,26 +121,25 @@ class TypeController {
   async delete(req, res, next) {
     try {
       const { id } = req.params;
-      const type = await Type.findByPk(id);
+      const product = await Products.findByPk(id);
 
-      if (!type) {
-        return next(ApiError.notFound('Тип упражнения не найден'));
+      if (!product) {
+        return next(ApiError.notFound('Товар не найден'));
       }
 
-      const exercisesCount = await Exercise.count({
-        where: { id_type: id }
-      });
-
-      if (exercisesCount > 0) {
-        return next(ApiError.badRequest('Нельзя удалить тип, так как есть связанные упражнения'));
+      if (product.image) {
+        const imagePath = path.resolve(__dirname, '..', 'uploads', 'products', product.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
       }
 
-      await type.destroy();
-      return res.json({ message: 'Тип упражнения успешно удален' });
+      await product.destroy();
+      return res.json({ message: 'Товар успешно удален' });
     } catch (err) {
       next(ApiError.internal(err.message));
     }
   }
 }
 
-module.exports = new TypeController();
+module.exports = new ProductsController();
