@@ -1,0 +1,39 @@
+.header {
+    background-color: #DEECEC;
+    border-bottom: 1px solid #84BABE;
+}
+.header__content {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    color: #6A7087;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.logo {
+}
+.nav__list {
+    display: flex;
+    gap: 60px;
+    
+}
+.nav_item>a {
+    font-size: 18px;
+}
+.hrader__icon  {
+    display: flex;
+    gap: 30px;
+}
+
+@media (width<1130px)  {
+    .nav__list {
+        display: flex;
+        gap: 20px;
+    }
+}
+
+@media (width<801px) {
+    .nav__list{
+        display: none;
+    }
+}

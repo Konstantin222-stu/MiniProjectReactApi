@@ -1,0 +1,20 @@
+.hero {
+    background-color: #DEECEC;
+}
+.hero__content {
+    background-image: url("hero-background.jpg");
+    background-size: contain;
+    display: flex;
+    padding-top: 100px;
+    align-items: center;
+}
+.hero__info .subdesc{
+    margin-bottom: 11px;
+}
+.hero__info .title {
+    margin-bottom: 25px;
+}
+
+.hero__info .desc {
+    margin-bottom: 40px;
+}

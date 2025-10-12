@@ -1,0 +1,14 @@
+.latest__content {
+    padding-top: 50px;
+}
+.latest__content > .title {
+    margin-bottom: 25px;
+}
+.latest__content > .desc {
+    margin-bottom: 30px;
+}
+.latest__cards {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
