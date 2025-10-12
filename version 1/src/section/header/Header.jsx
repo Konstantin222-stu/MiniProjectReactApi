@@ -5,7 +5,7 @@ const Header = () => {
     <header className="header">
         <div className="header__content wrap">
             <a href="#">
-                <img src="logo.svg" alt="logo" className="logo"></img>
+                <img src="/logo.svg" alt="logo" className="logo"></img>
             </a>
             <nav>
                 <ul className="nav__list">
