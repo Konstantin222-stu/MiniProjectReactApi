@@ -41,8 +41,8 @@ const Promotion = ({subdesc, title, desc, price, sale, link, time, src}) => {
                 <p className="desc desc_lg">{desc}</p>
                 <span>
                     <div className="promotion__price">
-                        <p className="price price_lg">{sale}</p>
-                        <p className="price_sale">{price}</p>
+                        <p className="price price_lg">${sale}</p>
+                        <p className="price_sale">${price}</p>
                     </div>
                     <a href={link} className="button button_lg">BUY NOW</a>
                 </span>

@@ -6,7 +6,7 @@ const ProductCard = ({src, title, price, size, reviews, stars, tags}) => {
         
         <div className="tag">
             {tags.map((item)=>(
-                item == "SALE" ? <div className="tag_sale">SALE</div> : <div className="tag_hot">{item}</div>
+                item == "SALE" ? <div className="tag_sale" key={item}>SALE</div> : <div className="tag_hot" key={item}>{item}</div>
             ))}
         </div>
         <img src={src} alt="product"></img>
@@ -24,9 +24,9 @@ const ProductCard = ({src, title, price, size, reviews, stars, tags}) => {
         </div>
         <h3 className="title title_md">{title}</h3>
         <div className="product-card__size-price">
-            <p className="price">{price}</p>
+            <p className="price">${price}</p>
             <div className="product__size">
-                {size.map((item)=><p className="size desc desc_md">{item}</p>)}
+                {size.map((item)=><p className="size desc desc_md" key={item}>{item}</p>)}
             </div>
         </div>
     </div>

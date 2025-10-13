@@ -61,6 +61,7 @@ const Products = sequelize.define('Products', {
         defaultValue: []
     },
     category: DataTypes.STRING(30),
+    image:DataTypes.STRING(150),
     
 }, { 
     tableName: 'products', 

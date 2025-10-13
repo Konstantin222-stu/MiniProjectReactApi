@@ -4,38 +4,58 @@ import Advantage from '../../section/advantage/Advantage'
 import Lastest from '../../section/latest/Lastest'
 import Promotion from '../../section/promotion/Promotion'
 import ProductsMain from '../../section/prodictsMain/ProductsMain'
+import { useEffect, useState } from 'react'
+import { $host } from '../../http/handlerApi'
 
 const Main = () => {
-  const promotionData = [
-    {
-      src: "promotion/promotion.png",
-      subdesc: "Featured Product",
-      title: "Ulina Fashionable Jeans",
-      desc: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequa uis aute irure dolor",
-      price: "$399",
-      sale: "$199",
-      link: "#",
-      time: 10
-    },
-    
-  ]
+  const [isLoading, setIsLoading] = useState(false)
+  const [promotion, setPromotion] = useState([])
+
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await $host('promotions/');
+        setPromotion(response.data); 
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        setPromotion([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  if (isLoading) {
+    return <div className="loading">Загрузка...</div>;
+  }
+
+  console.log(promotion);
+
+  const currentPromotion = promotion[0];
+  const showPromotion = currentPromotion && currentPromotion.timeLeft > 0;
 
   return (
     <>
       <Hero/>
       <Advantage/>
       <Lastest/>
-      {promotionData[0].time == 0 ? null :
+      
+      {showPromotion ? (
         <Promotion 
-        subdesc = {promotionData[0].subdesc} 
-        src={promotionData[0].src} 
-        title={promotionData[0].title}
-        desc={promotionData[0].desc}
-        price={promotionData[0].price}
-        sale={promotionData[0].sale}
-        link={promotionData[0].link}
-        time={promotionData[0].time} />
-      }
+          subdesc={currentPromotion.subdesc} 
+          src={currentPromotion.image} 
+          title={currentPromotion.title}
+          desc={currentPromotion.desc}
+          price={currentPromotion.price}
+          sale={currentPromotion.sale}
+          link={currentPromotion.link}
+          time={currentPromotion.timeLeft} 
+        />
+      ) : null}
+      
       <ProductsMain/>
     </>
   )

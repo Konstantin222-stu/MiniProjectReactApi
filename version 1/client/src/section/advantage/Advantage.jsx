@@ -28,8 +28,9 @@ const Advantage = () => {
     <div className="advantage">
         <div className="advantage__content wrap">
              {
-                data.map((item) =>(
+                data.map((item,index) =>(
                     <AdvantageCard
+                        key={`advantage${index}`}
                         src={item.src}
                         title={item.title}
                         desc={item.desc}

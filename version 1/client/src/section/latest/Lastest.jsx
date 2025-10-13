@@ -1,73 +1,44 @@
 import React from 'react'
 import ProductCard from '../../components/productCard/ProductCard'
+import { $host } from '../../http/handlerApi'
+import { useEffect } from 'react'
+import { useState } from 'react'
 
 const Lastest = () => {
-    const data = [
-        {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$25",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 5,
-            tags: ["TOP", "SALE"]
-        },
-         {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$25",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 1,
-            tags: ["TOP", "SALE"]
-        },
-         {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$25",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 5,
-            tags: ["TOP", "SALE"]
-        },
-         {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$25",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 5,
-            tags: ["TOP", "SALE"]
-        },
-         {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$250",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 5,
-            tags: ["TOPE", "SALE"]
-        },
-         {
-            src: "product/product.jpg",
-            title: "Ladies yellow top",
-            price: "$25",
-            size: ["L", "S", "XL"],
-            reviews: 4,
-            stars: 5,
-            tags: ["TOP", "SALE"]
-        },
+    const [isLoading, setIsLoading] = useState(false)
+    const [products, setProducts] = useState([])
 
-    ]
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await $host('product/');
+        setProducts(response.data); 
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  if (isLoading) {
+    return <div className="loading">Загрузка...</div>;
+  }
+   
   return (
     <div className="latest">
         <div className="latest__content wrap">
             <h2 className="title title_lg">Latest Arrival</h2>
             <p className="desc desc_lg">Showing our latest arrival on this summer</p>
             <div className="latest__cards">
-                {data.map((item)=>(
+                {products.map((item,index)=>(
                     <ProductCard 
-                    src={item.src} 
+                    key={`latest${index}`}
+                    src={item.image} 
                     title={item.title} 
                     price={item.price}
                     size={item.size}
