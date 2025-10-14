@@ -1,10 +1,10 @@
 import {Router} from 'express'
 import userController from '../controllers/userController'
-import checkRole from '../middleware/authMiddleware'
+import authMiddleware from '../middleware/authMiddleware';
 
 const userRouter = Router();
 
-router.get('/check', checkRole(), userController.checkUser)
-router.post('/login', userController.login)
+userRouter.get('/check', authMiddleware, userController.checkUser)
+userRouter.post('/login', userController.login)
 
-module.exports = userRouter
+export default userRouter

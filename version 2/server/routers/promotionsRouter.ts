@@ -1,10 +1,10 @@
-import Router from 'express'
+import {Router} from 'express'
 import promotionController from '../controllers/promotionController'
-import checkRole from '../middleware/authMiddleware'
+import authMiddleware from '../middleware/authMiddleware';
 
 const promotionRouter = Router();
 
-router.get('/', promotionController.get)
-router.put('/:id',checkRole(), promotionController.put)
+promotionRouter.get('/', promotionController.get)
+promotionRouter.put('/:id',authMiddleware, promotionController.put)
 
-module.exports = promotionRouter
+export default promotionRouter

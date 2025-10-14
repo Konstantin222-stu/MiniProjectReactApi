@@ -4,10 +4,10 @@ import authMiddleware  from '../middleware/authMiddleware';
 
 const productsRouter = Router();
 
-router.get('/', productController.get);
-router.get('/:id', productController.getID);
-router.post('/', authMiddleware, productController.post);
-router.put('/:id', authMiddleware, productController.put);
-router.delete('/:id', authMiddleware, productController.delete);
+productsRouter.get('/', productController.get);
+productsRouter.get('/:id', productController.getID);
+productsRouter.post('/', authMiddleware, productController.post);
+productsRouter.put('/:id', authMiddleware, productController.put);
+productsRouter.delete('/:id', authMiddleware, productController.delete);
 
 export default productsRouter;

@@ -5,7 +5,7 @@ import { AuthRequest, IJwtPayload } from '../types/middleware'
 import ApiError from '../error';
 
 export default function () {
-    return async function (req:AuthRequest , res: Response, next: NextFunction) {
+    return async function (req: AuthRequest , res: Response, next: NextFunction) {
         if (req.method === "OPTIONS") {
             return next();
         }
