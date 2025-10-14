@@ -1,19 +1,4 @@
-interface IValidationError{
-    field:string,
-    message:string,
-    value?:string | number | boolean | null;
-}
-
-interface IApiErrorResponse<T = IValidationError> {
-    status: number,
-    message: string,
-    errors: T[],
-    code: string,
-    timestamp: string
-}
-
-type HttpStatusCode = 400 | 401 | 403 | 404 | 409 | 422 | 500 
-type ErrorCode = 'UNAUTHORIZED' | 'BAD_REQUEST' | 'VALIDATION_FAILED' | 'NOT_FOUND' | 'INTERNAL_ERROR' | 'FORBIDDEN' | 'CONFLICT' 
+import { ErrorCode, HttpStatusCode, IApiErrorResponse, IValidationError } from "../types/error";
 
 class ApiError<T = IValidationError> extends Error {
     public status:HttpStatusCode;

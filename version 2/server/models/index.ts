@@ -1,8 +1,15 @@
-const sequelize = require('./db');
-const { DataTypes } = require('sequelize');
+import { UserAttributes, UserCreationAttributes, PromotionAttributes, ProductsAttributes } from '../types/model';
+import sequelize from './db';
+import { DataTypes, Model, Optional } from 'sequelize';
 
 
-const User = sequelize.define('User', {
+class User extends Model <UserAttributes, UserCreationAttributes> implements UserAttributes{
+    public id_user!: number;
+    public login!: string;
+    public password!: string; 
+}
+
+User.init({
     id_user: { 
         type: DataTypes.INTEGER, 
         primaryKey: true, 
@@ -16,13 +23,27 @@ const User = sequelize.define('User', {
     password: { 
         type: DataTypes.STRING(250), 
         allowNull: false 
-    },
-}, { 
+    }},
+    { 
+    sequelize,
     tableName: 'users',  
     timestamps: false 
-});
+}); 
 
-const Promotion = sequelize.define('Promotion', {
+
+class Promotion extends Model<PromotionAttributes> implements PromotionAttributes{
+    public id_promotion!: number;
+    public subdesc?: string;
+    public title?:string;
+    public desc?:string;
+    public price?: number;
+    public sale?:number;
+    public link?:string;
+    public time?: Date;
+    public image?: string
+}
+
+Promotion.init({
     id_promotion: {  
         type: DataTypes.INTEGER, 
         primaryKey: true, 
@@ -36,12 +57,26 @@ const Promotion = sequelize.define('Promotion', {
     link: { type: DataTypes.STRING(50) },
     time: { type: DataTypes.DATE },
     image: { type: DataTypes.STRING(100) }, 
-}, { 
+},{
+    sequelize,
     tableName: 'promotions', 
     timestamps: false 
-});
+})
 
-const Products = sequelize.define('Products', {
+class Products extends Model<ProductsAttributes> implements ProductsAttributes {
+    public id_products!: number;
+    public title?: string;
+    public price?: number;
+    public size?: string[];
+    public reviews?: number;
+    public desc?: string;
+    public stars?: number;
+    public tags?: string[];
+    public category?: string;
+    public image?: string;
+}
+
+Products.init({
     id_products: { 
         type: DataTypes.INTEGER, 
         primaryKey: true, 
@@ -61,17 +96,15 @@ const Products = sequelize.define('Products', {
         defaultValue: []
     },
     category: DataTypes.STRING(30),
-    image:DataTypes.STRING(150),
-    
-}, { 
+    image:DataTypes.STRING(150),  
+},{
+    sequelize,
     tableName: 'products', 
     timestamps: false 
-});
+})
+    
 
-
-
-
-module.exports = {
+export {
     sequelize,
     User,
     Promotion,
