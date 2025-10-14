@@ -21,7 +21,7 @@ export interface PromotionAttributes {
 }
 
 export interface ProductsAttributes{
-    id_products: number;
+    id_products?: number;
     title?: string;
     price?: number;
     size?: string[];

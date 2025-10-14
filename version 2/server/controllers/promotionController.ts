@@ -79,20 +79,27 @@ class PromotionController {
     }
   }
 
-  async put(req:UpdatePromotionRequest, res:Response, next:NextFunction): Promise<Response | void> {
+  async put(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { id } = req.params;
+      const body = req.body as UpdatePromotionBody;
+      const files = req.files as {
+        image?: {
+          name: string;
+          mv: (path: string) => Promise<void>;
+       };
+      } | undefined;
+              
       const promotion = await Promotion.findByPk(id);
-      
+              
       if (!promotion) {
         return next(ApiError.notFound('Акция не найдена'));
       }
 
-      const { subdesc, title, desc, price, sale, link, time }:UpdatePromotionBody = req.body || {};
-      let imagePath : string | null = null;
+      const { subdesc, title, desc, price, sale, link, time } = body || {};
+      let imagePath: string | null = null;
 
-    
-      if (req.files?.image) {    
+      if (files?.image) {    
         if (promotion.image) {
           const oldImagePath = path.resolve(__dirname, '..', 'uploads', 'promotion', promotion.image);
           if (fs.existsSync(oldImagePath)) {
@@ -100,16 +107,15 @@ class PromotionController {
           }
         }
 
-        const { image } = req.files;
+        const { image } = files;
         const fileName = uuidv4() + path.extname(image.name);
-        imagePath = path.join('uploads', 'promotion', fileName);
-        
-        await image.mv(path.resolve(__dirname, '..', imagePath));
-        imagePath = fileName;
-      }
+        const fullPath = path.join('uploads', 'promotion', fileName);
+                  
+        await image.mv(path.resolve(__dirname, '..', fullPath));
+          imagePath = fileName;
+        }
 
-      
-      const updateData: Partial<{
+        const updateData: Partial<{
           subdesc: string;
           title: string;
           desc: string;
@@ -118,36 +124,36 @@ class PromotionController {
           link: string;
           time: Date;
           image: string;
-      }> = {};
-      
-      if (subdesc !== undefined) updateData.subdesc = subdesc;
-      if (title !== undefined) updateData.title = title;
-      if (desc !== undefined) updateData.desc = desc;
-      if (price !== undefined) updateData.price = parseInt(price);
-      if (sale !== undefined) updateData.sale = parseInt(sale); 
-      if (link !== undefined) updateData.link = link;
-      if (time !== undefined) updateData.time = new Date(time); 
-      if (imagePath !== null) updateData.image = imagePath; 
+        }> = {};
+        
+        if (subdesc !== undefined) updateData.subdesc = subdesc;
+        if (title !== undefined) updateData.title = title;
+        if (desc !== undefined) updateData.desc = desc;
+        if (price !== undefined) updateData.price = parseInt(price);
+        if (sale !== undefined) updateData.sale = parseInt(sale); 
+        if (link !== undefined) updateData.link = link;
+        if (time !== undefined) updateData.time = new Date(time); 
+        if (imagePath !== null) updateData.image = imagePath; 
 
-      
-      if (Object.keys(updateData).length > 0) {
-        await promotion.update(updateData); 
-      }
+        
+        if (Object.keys(updateData).length > 0) {
+          await promotion.update(updateData); 
+        }
 
-      
-      const updatedPromotion = await Promotion.findByPk(id);
-      if(!updatedPromotion){
-        return next(ApiError.notFound("Акция не найдена после обновления"))
-      }
-      const promotionData = updatedPromotion.get({ plain: true });
-      const timeEnd = promotionData.time ? new Date(promotionData.time) : new Date();
-      const now = new Date();
-      const timeLeftSeconds = Math.max(0, Math.floor((timeEnd.getTime() - now.getTime()) / 1000));
+        
+        const updatedPromotion = await Promotion.findByPk(id);
+        if(!updatedPromotion){
+          return next(ApiError.notFound("Акция не найдена после обновления"))
+        }
+        const promotionData = updatedPromotion.get({ plain: true });
+        const timeEnd = promotionData.time ? new Date(promotionData.time) : new Date();
+        const now = new Date();
+        const timeLeftSeconds = Math.max(0, Math.floor((timeEnd.getTime() - now.getTime()) / 1000));
 
-      return res.json({
-        ...promotionData,
-        timeLeft: timeLeftSeconds
-      });
+        return res.json({
+          ...promotionData,
+          timeLeft: timeLeftSeconds
+        });
     } catch (err:unknown) {
       if(err instanceof Error){
         next(ApiError.badRequest(err.message));
@@ -155,10 +161,8 @@ class PromotionController {
       else{
         next(ApiError.badRequest('Неизвестная ошибка'));
       }
-      
     }
   }
-
 }
 
 export default new PromotionController(); 
