@@ -1,36 +1,35 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-const Promotion = ({subdesc, title, desc, price, sale, link, time, src}) => {
+const PromotionAdminCard = ({subdesc, title, desc, price, sale, link, time, src, id, edit}) => {
     const [timeLeft, setTimeLeft] = useState(time);
-    const formatTime = useCallback((time) => {
-        const days = Math.floor(time / 86400);
-        const hours = Math.floor((time % 86400) / 3600);
-        const minutes = Math.floor((time % 3600) / 60);
-        const seconds = time % 60;
-        return {
-        days: days.toString().padStart(2, '0'),
-        hours: hours.toString().padStart(2, '0'),
-        minutes: minutes.toString().padStart(2, '0'),
-        seconds: seconds.toString().padStart(2, '0')
+        const formatTime = useCallback((time) => {
+            const days = Math.floor(time / 86400);
+            const hours = Math.floor((time % 86400) / 3600);
+            const minutes = Math.floor((time % 3600) / 60);
+            const seconds = time % 60;
+            return {
+            days: days.toString().padStart(2, '0'),
+            hours: hours.toString().padStart(2, '0'),
+            minutes: minutes.toString().padStart(2, '0'),
+            seconds: seconds.toString().padStart(2, '0')
+            };
+      }, []);
+    
+      useEffect(() => {
+        if (timeLeft <= 0) return;
+    
+        const timer = setInterval(() => {
+          setTimeLeft(prev => prev - 1);
+        }, 1000);
+    
+        return () => {
+            clearInterval(timer)
         };
-  }, []);
-
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
-    }, 1000);
-
-    return () => {
-        clearInterval(timer)
-    };
-  }, [timeLeft]);
-  
-  const { days, hours, minutes, seconds } = formatTime(timeLeft);
+      }, [timeLeft]);
+      
+      const { days, hours, minutes, seconds } = formatTime(timeLeft);
   return (
-    timeLeft <=0 ? null :
-    <div className="promotion">
+    <div className="promotion" onClick={()=>edit(id)}>
         <div className="promotion__content wrap">
             <div className="promotion__img">
                 <img src={'http://localhost:3001/promotion/'+src} alt="promotion"></img>
@@ -71,4 +70,4 @@ const Promotion = ({subdesc, title, desc, price, sale, link, time, src}) => {
   )
 }
 
-export default Promotion
+export default PromotionAdminCard

@@ -4,7 +4,7 @@ import { $host } from '../../http/handlerApi'
 
 const ProductsMain = () => {
     const [category, setCategory] = useState()
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [products, setProducts] = useState([])
 
     useEffect(() => {
@@ -52,6 +52,7 @@ const ProductsMain = () => {
                     !category || item.category === category) && (
                     <ProductCard 
                     key={`productMain${index}`}
+                    id={item.id_products}
                     src={item.image} 
                     title={item.title} 
                     price={item.price}

@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { $authHost } from '../../http/handlerApi';
 
 const Admin = () => {
-  return (
-    <div>
-      ADMIN
-    </div>
+  return(
+    <div className=""></div>
   )
-}
+};
 
-export default Admin
+export default Admin;

@@ -1,11 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-const ProductCard = ({src, title, price, size, reviews, stars, tags,id}) => {
+const ProductCartAdmin = ({src, title, price, size, reviews, stars, tags, id, edit, deleteP}) => {
   return (
-    <Link to={`/product/${id}`}>
-        <div className="product__card">
-            
+        <div className="product__card" onClick={()=> edit(id)}>
             <div className="tag">
                 {tags.map((item)=>(
                     item == "SALE" ? <div className="tag_sale" key={item}>SALE</div> : <div className="tag_hot" key={item}>{item}</div>
@@ -31,9 +28,17 @@ const ProductCard = ({src, title, price, size, reviews, stars, tags,id}) => {
                     {size.map((item)=><p className="size desc desc_md" key={item}>{item}</p>)}
                 </div>
             </div>
+            <button onClick={
+                (e)=> {
+                e.stopPropagation() 
+                deleteP(id) }
+                } 
+                style={{background: "red", color: "#fff"}
+                }>
+                    Удалить
+                </button>
         </div>
-    </Link>
   )
 }
 
-export default ProductCard
+export default ProductCartAdmin

@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Modal from '../../components/modal/Modal';
+import Login from '../login/Login';
 
 const Header = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const close = () => setIsModalOpen(false);
   return (
     <header className="header">
         <div className="header__content wrap">
@@ -18,10 +22,17 @@ const Header = () => {
                 </ul>
             </nav>
             <div className="hrader__icon">
-                <a href="#"><img src="header/search.svg" alt="search"></img></a>
-                <a href="#"><img src="header/person.svg" alt="profil"></img></a>
-                <a href="#"><img src="header/cart.svg" alt="cart"></img></a>
+                <a href="#"><img src="/header/search.svg" alt="search"></img></a>
+               <a href="#" onClick={e => { e.preventDefault(); setIsModalOpen(true); }}>
+                    <img src="/header/person.svg" alt="profil" />
+                </a>
+                <a href="#"><img src="/header/cart.svg" alt="cart"></img></a>
             </div>
+            {isModalOpen && (
+                <Modal onClose={() => setIsModalOpen(false)}>
+                    <Login close={close}/>
+                </Modal>
+            )}
         </div>
     </header>
   )

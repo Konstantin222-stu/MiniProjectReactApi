@@ -1,13 +1,25 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react';
 
-const Modal = ({children}) => {
+const Modal = ({ onClose, children }) => {
+  const modalRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
   return (
-    <div className='modal'>
-        <div className="modal__content">
-            {children}
-        </div>
+    <div className="modal-overlay">
+      <div className="modal-content" ref={modalRef}>
+        {children}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

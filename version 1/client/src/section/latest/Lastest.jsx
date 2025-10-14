@@ -38,6 +38,7 @@ const Lastest = () => {
                 {products.map((item,index)=>(
                     <ProductCard 
                     key={`latest${index}`}
+                    id={item.id_products}
                     src={item.image} 
                     title={item.title} 
                     price={item.price}

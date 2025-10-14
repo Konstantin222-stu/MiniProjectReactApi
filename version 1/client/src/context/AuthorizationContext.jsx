@@ -4,12 +4,12 @@ import { $host } from '../http/handlerApi';
 export const AuthorizationContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [admin, setAdmin] = useState(null);
+    const [admin, setAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const verifyToken = useCallback(async (token) => {
         try {
-            const response = await $host.get('/api/user/', {
+            const response = await $host.get('user/check', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -31,23 +31,30 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 const isValid = await verifyToken(token);
                 setAdmin(isValid);
-                if (!isValid) {
-                    console.warn('User not authorized - invalid token');
-                }
             } else {
                 setAdmin(false);
-                console.warn('User not authorized - no token');
             }
             setLoading(false);
         };
         
         checkAuth();
     }, [verifyToken]);
-
-    const login = useCallback(async (token) => {
-        localStorage.setItem('authToken', token);
-        setAdmin(true);
-    }, []);
+    
+    const login = async (credentials) => {
+        try {
+            setLoading(true);
+            const response = await $host.post('/user/login', credentials); 
+            const { token } = response.data;
+            localStorage.setItem('authToken', token);
+            setAdmin(true);
+            return { success: true };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message || 'Ошибка авторизации';
+            return { success: false, error: errorMessage };
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const logout = useCallback(() => {
         localStorage.removeItem('authToken');
@@ -58,12 +65,14 @@ export const AuthProvider = ({ children }) => {
         admin,
         loading,
         login,
-        logout
+        logout,
+        isAdmin: admin,
+        user: admin ? { role: 'admin' } : null
     };
 
     return (
         <AuthorizationContext.Provider value={value}>
-            {!loading && children}
+            {children}
         </AuthorizationContext.Provider>
     );
 };
