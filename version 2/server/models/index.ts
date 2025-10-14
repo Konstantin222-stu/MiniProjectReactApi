@@ -1,4 +1,4 @@
-import { UserAttributes, UserCreationAttributes, PromotionAttributes, ProductsAttributes } from '../types/model';
+import { UserAttributes, UserCreationAttributes, PromotionAttributes, ProductsAttributes, PromotionCreationAttributes } from '../types/model';
 import sequelize from './db';
 import { DataTypes, Model, Optional } from 'sequelize';
 
@@ -31,7 +31,7 @@ User.init({
 }); 
 
 
-class Promotion extends Model<PromotionAttributes> implements PromotionAttributes{
+class Promotion extends Model<PromotionAttributes, PromotionCreationAttributes> implements PromotionAttributes{
     public id_promotion!: number;
     public subdesc?: string;
     public title?:string;

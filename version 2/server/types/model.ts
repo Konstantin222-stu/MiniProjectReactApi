@@ -9,7 +9,7 @@ export interface UserAttributes {
 export interface UserCreationAttributes extends Optional<UserAttributes, 'id_user'> {}
 
 export interface PromotionAttributes {
-    id_promotion: number;
+    id_promotion?: number;
     subdesc?: string;
     title?:string;
     desc?:string;
@@ -32,3 +32,5 @@ export interface ProductsAttributes{
     category?: string;
     image?: string;
 }
+
+export interface PromotionCreationAttributes extends Optional<PromotionAttributes, 'id_promotion'> {}

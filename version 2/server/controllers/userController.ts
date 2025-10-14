@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken'
 import ApiError from "../error"
 import {Request, Response, NextFunction} from 'express'
 import {AuthRequest} from '../types/middleware'
-import { LoginRequestBody } from "../types/users"
+import { LoginRequestBody,IUserController, CheckUserResponse, LoginResponse } from "../types/users"
 
-class UserController {
+class UserController implements IUserController {
 
   async checkUser(req: AuthRequest, res: Response, next: NextFunction): Promise<Response| void> {
     try {
@@ -35,7 +35,7 @@ class UserController {
           id: user.id_user, 
           login: user.login,
         }
-      });
+      } as CheckUserResponse);
     } catch (err: unknown) {
         if(err instanceof Error){
           next(ApiError.badRequest(err.message))
@@ -71,7 +71,7 @@ class UserController {
         { expiresIn: '24h' }
       );
 
-      return res.json({ token });
+      return res.json({ token } as LoginResponse);
     } catch (err: unknown) {
       if(err instanceof Error){
         next(ApiError.badRequest(err.message))
