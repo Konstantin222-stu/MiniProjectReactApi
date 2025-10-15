@@ -1,26 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useAuth } from '../../context/AuthorizationContext'; 
 import { useNavigate } from 'react-router-dom';
+import type { LoginCredentials, LoginProps } from '../../types/auth.type';
 
-const Login = ({close}) => {
+const Login: React.FC<LoginProps>  = ({close}) => {
     const navigate = useNavigate();
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
-    
-
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
     const { login, admin, loading } = useAuth();
     
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<LoginCredentials>({
         login: '',
         password: ''
     });
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError(null);
         setIsSubmitting(true);
@@ -33,7 +32,7 @@ const Login = ({close}) => {
             } else {
                 setError(result?.error || 'Ошибка авторизации');
             }
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message || 'Произошла ошибка при авторизации');
             console.error('Login error:', error);
         } finally {

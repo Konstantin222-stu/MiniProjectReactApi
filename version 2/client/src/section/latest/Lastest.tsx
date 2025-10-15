@@ -3,7 +3,7 @@ import ProductCard from '../../components/productCard/ProductCard'
 import { $host } from '../../http/handlerApi'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import type { ProductApiItem, ProductBaseProps } from '../../types/products.type'
+import type { ProductApiItem } from '../../types/products.type'
 
 const Lastest:React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
