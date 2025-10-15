@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import { User } from '../models';
-import { AuthRequest, IJwtPayload } from '../types/middleware'
+import type { AuthRequest, IJwtPayload } from '../types/middleware'
 import ApiError from '../error';
 
 export default function () {

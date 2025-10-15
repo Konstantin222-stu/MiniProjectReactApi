@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { AuthRequest } from "./middleware";
+import type { NextFunction, Request, Response } from "express";
+import type { AuthRequest } from "./middleware";
 
 export interface LoginRequestBody{
     login: string;

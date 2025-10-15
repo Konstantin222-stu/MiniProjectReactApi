@@ -2,9 +2,9 @@ import { User } from "../models"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import ApiError from "../error"
-import {Request, Response, NextFunction} from 'express'
-import {AuthRequest} from '../types/middleware'
-import { LoginRequestBody,IUserController, CheckUserResponse, LoginResponse } from "../types/users"
+import type {Request, Response, NextFunction} from 'express'
+import type {AuthRequest} from '../types/middleware'
+import type { LoginRequestBody,IUserController, CheckUserResponse, LoginResponse } from "../types/users"
 
 class UserController implements IUserController {
 

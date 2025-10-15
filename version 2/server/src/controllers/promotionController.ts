@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path"
 import fs from "fs"
 import ApiError from "../error"
-import {Response, Request, NextFunction} from 'express'
-import {UpdatePromotionBody, CreatePromotionRequest, UpdatePromotionRequest } from "../types/promotion";
+import type {Response, Request, NextFunction} from 'express'
+import type {UpdatePromotionBody, CreatePromotionRequest, UpdatePromotionRequest } from "../types/promotion";
 
 class PromotionController {
   async get(req:Request, res:Response, next:NextFunction):Promise<Response | void> {
@@ -48,16 +48,18 @@ class PromotionController {
         imagePath = fileName;
       }
 
-      const promotion = await Promotion.create({
-        subdesc: subdesc || undefined,
-        title: title || undefined,
-        desc: desc || undefined,
-        price: price ? parseInt(price) : undefined,
-        sale: sale ? parseInt(sale) : undefined,
-        link: link || undefined,
-        time: time ? new Date(time) : undefined, 
-        image: imagePath  || undefined
-      });
+        const promotionDataNew: any = {
+      ...(subdesc && { subdesc }),
+      ...(title && { title }),
+      ...(desc && { desc }),
+      ...(price && { price: parseInt(price) }),
+      ...(sale && { sale: parseInt(sale) }),
+      ...(link && { link }),
+      ...(time && { time: new Date(time) }),
+      ...(imagePath && { image: imagePath })
+    };
+
+    const promotion = await Promotion.create(promotionDataNew);
 
 
       const promotionData = promotion.get({ plain: true });

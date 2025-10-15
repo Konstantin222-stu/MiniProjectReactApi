@@ -1,6 +1,7 @@
-import { UserAttributes, UserCreationAttributes, PromotionAttributes, ProductsAttributes, PromotionCreationAttributes } from '../types/model';
+import type { UserAttributes, UserCreationAttributes, PromotionAttributes, ProductsAttributes, PromotionCreationAttributes } from '../types/model';
 import sequelize from './db';
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model} from 'sequelize';
+import type { Optional } from 'sequelize';
 
 
 class User extends Model <UserAttributes, UserCreationAttributes> implements UserAttributes{

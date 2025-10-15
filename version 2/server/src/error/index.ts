@@ -1,4 +1,4 @@
-import { ErrorCode, HttpStatusCode, IApiErrorResponse, IValidationError } from "../types/error";
+import type { ErrorCode, HttpStatusCode, IApiErrorResponse, IValidationError } from "../types/error";
 
 class ApiError<T = IValidationError> extends Error {
     public status:HttpStatusCode;

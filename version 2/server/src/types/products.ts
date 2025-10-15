@@ -1,5 +1,5 @@
-import { Request } from 'express';
-import { UploadedFile } from 'express-fileupload';
+import type { Request } from 'express';
+import type { UploadedFile } from 'express-fileupload';
 
 export interface CreateProductBody {
     title?: string;

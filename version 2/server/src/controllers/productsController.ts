@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path"
 import fs from "fs"
 import ApiError from "../error"
-import {Request, Response, NextFunction} from 'express'
-import { CreateProductBody, UpdateProductBody } from "../types/products";
+import type {Request, Response, NextFunction} from 'express'
+import type { CreateProductBody, UpdateProductBody } from "../types/products";
 
 class ProductsController {
   async get(req:Request, res:Response, next:NextFunction):Promise<Response | void> {
@@ -67,17 +67,19 @@ class ProductsController {
       const parsedSize = typeof size === 'string' ? JSON.parse(size) : size;
       const parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
 
-      const product = await Products.create({
-        title: title || undefined,
-        price: price ? parseInt(price) : undefined,
-        size: parsedSize || [],
-        reviews: reviews ? parseInt(reviews) : 0,
-        desc: desc || undefined,
-        stars: stars ? parseInt(stars) : 0,
-        tags: parsedTags || [],
-        category: category || undefined,
-        image: imagePath || undefined
-      });
+      const productData = {
+      ...(title && { title }),
+      ...(price && { price: parseInt(price) }),
+      ...(desc && { desc }),
+      ...(category && { category }),
+      ...(imagePath && { image: imagePath }),
+      size: parsedSize || [],
+      reviews: reviews ? parseInt(reviews) : 0,
+      stars: stars ? parseInt(stars) : 0,
+      tags: parsedTags || []
+    };
+
+const product = await Products.create(productData as any);
 
       return res.status(201).json(product);
     } catch (err: unknown) {
