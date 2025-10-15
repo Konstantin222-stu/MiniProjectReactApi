@@ -6,16 +6,17 @@ import Promotion from '../../section/promotion/Promotion'
 import ProductsMain from '../../section/prodictsMain/ProductsMain'
 import { useEffect, useState } from 'react'
 import { $host } from '../../http/handlerApi'
+import type { PromotionItem } from '../../types/promotion.type'
 
-const Main = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [promotion, setPromotion] = useState([])
+const Main: React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [promotion, setPromotion] = useState<PromotionItem[]>([])
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = async (): Promise<void> => {
       setIsLoading(true);
       try {
-        const response = await $host('promotions/');
+        const response = await $host.get<PromotionItem[]>('promotions/');
         setPromotion(response.data); 
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -34,8 +35,8 @@ const Main = () => {
 
   console.log(promotion);
 
-  const currentPromotion = promotion[0];
-  const showPromotion = currentPromotion && currentPromotion.timeLeft > 0;
+  const currentPromotion: PromotionItem | undefined = promotion[0];
+  const showPromotion: boolean =Boolean(currentPromotion && currentPromotion.timeLeft > 0);
 
   return (
     <>
@@ -43,7 +44,7 @@ const Main = () => {
       <Advantage/>
       <Lastest/>
       
-      {showPromotion ? (
+      {showPromotion && currentPromotion ? (
         <Promotion 
           subdesc={currentPromotion.subdesc} 
           src={currentPromotion.image} 

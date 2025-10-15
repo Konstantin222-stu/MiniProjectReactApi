@@ -21,3 +21,20 @@ export interface FormattedTime{
     minutes: string;
     seconds: string;
 }
+
+export interface PromotionItem {
+    id: number;
+    subdesc: string;
+    title: string;
+    desc: string;
+    price: number;
+    sale: number;
+    link: string;
+    timeLeft: number; 
+    image: string;
+    time?: Date; 
+}
+
+export interface PromotionResponse {
+    data: PromotionItem[];
+}
