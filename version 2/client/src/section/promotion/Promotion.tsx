@@ -1,35 +1,37 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import type { FormattedTime, PromotionBaseProps } from '../../types/promotion.type';
 
-const PromotionAdminCard = ({subdesc, title, desc, price, sale, link, time, src, id, edit}) => {
-    const [timeLeft, setTimeLeft] = useState(time);
-        const formatTime = useCallback((time) => {
-            const days = Math.floor(time / 86400);
-            const hours = Math.floor((time % 86400) / 3600);
-            const minutes = Math.floor((time % 3600) / 60);
-            const seconds = time % 60;
-            return {
+const Promotion: React.FC<PromotionBaseProps> = ({subdesc, title, desc, price, sale, link, time, src}) => {
+    const [timeLeft, setTimeLeft] = useState<number>(time);
+    const formatTime = useCallback((time: number):FormattedTime => {
+        const days = Math.floor(time / 86400);
+        const hours = Math.floor((time % 86400) / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = time % 60;
+        return {
             days: days.toString().padStart(2, '0'),
             hours: hours.toString().padStart(2, '0'),
             minutes: minutes.toString().padStart(2, '0'),
             seconds: seconds.toString().padStart(2, '0')
-            };
-      }, []);
-    
-      useEffect(() => {
-        if (timeLeft <= 0) return;
-    
-        const timer = setInterval(() => {
-          setTimeLeft(prev => prev - 1);
-        }, 1000);
-    
-        return () => {
-            clearInterval(timer)
         };
-      }, [timeLeft]);
-      
-      const { days, hours, minutes, seconds } = formatTime(timeLeft);
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => {
+        clearInterval(timer)
+    };
+  }, [timeLeft]);
+  
+  const { days, hours, minutes, seconds } = formatTime(timeLeft);
   return (
-    <div className="promotion" onClick={()=>edit(id)}>
+    timeLeft <=0 ? null :
+    <div className="promotion">
         <div className="promotion__content wrap">
             <div className="promotion__img">
                 <img src={'http://localhost:3001/promotion/'+src} alt="promotion"></img>
@@ -70,4 +72,4 @@ const PromotionAdminCard = ({subdesc, title, desc, price, sale, link, time, src,
   )
 }
 
-export default PromotionAdminCard
+export default Promotion
