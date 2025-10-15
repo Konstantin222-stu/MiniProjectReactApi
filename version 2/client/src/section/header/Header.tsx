@@ -2,9 +2,14 @@ import React, { useState } from 'react'
 import Modal from '../../components/modal/Modal';
 import Login from '../login/Login';
 
-const Header = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const close = () => setIsModalOpen(false);
+const Header: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const close = (): void => setIsModalOpen(false);
+
+    const handlerLoginClick = (e: React.MouseEvent<HTMLAnchorElement>):void =>{
+        e.preventDefault()
+        setIsModalOpen(true)
+    }
   return (
     <header className="header">
         <div className="header__content wrap">
@@ -23,7 +28,7 @@ const Header = () => {
             </nav>
             <div className="hrader__icon">
                 <a href="#"><img src="/header/search.svg" alt="search"></img></a>
-               <a href="#" onClick={e => { e.preventDefault(); setIsModalOpen(true); }}>
+               <a href="#" onClick={handlerLoginClick}>
                     <img src="/header/person.svg" alt="profil" />
                 </a>
                 <a href="#"><img src="/header/cart.svg" alt="cart"></img></a>
