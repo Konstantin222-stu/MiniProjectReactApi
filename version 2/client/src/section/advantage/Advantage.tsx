@@ -1,8 +1,9 @@
 import React from 'react'
 import AdvantageCard from '../../components/advantageCard/AdvantageCard'
+import type { AdvantageCardsProps } from '../../types/advantage.type'
 
-const Advantage = () => {
-    const data = [
+const Advantage: React.FC = () => {
+    const data: AdvantageCardsProps[] = [
         {
             src: "advantage/free.svg",
             title: "Free Shipping",
@@ -28,7 +29,7 @@ const Advantage = () => {
     <div className="advantage">
         <div className="advantage__content wrap">
              {
-                data.map((item,index) =>(
+                data.map((item: AdvantageCardsProps,index:number) =>(
                     <AdvantageCard
                         key={`advantage${index}`}
                         src={item.src}

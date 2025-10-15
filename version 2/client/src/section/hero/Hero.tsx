@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Hero = () => {
+const Hero: React.FC = () => {
   return (
     <div className="hero">
         <div className="hero__content wrap">

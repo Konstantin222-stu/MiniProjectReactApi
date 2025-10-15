@@ -3,16 +3,17 @@ import ProductCard from '../../components/productCard/ProductCard'
 import { $host } from '../../http/handlerApi'
 import { useEffect } from 'react'
 import { useState } from 'react'
+import type { ProductApiItem, ProductBaseProps } from '../../types/products.type'
 
-const Lastest = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [products, setProducts] = useState([])
+const Lastest:React.FC = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [products, setProducts] = useState<ProductApiItem[]>([])
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = async ():Promise<void> => {
       setIsLoading(true);
       try {
-        const response = await $host('product/');
+        const response = await $host.get<ProductApiItem[]>('product/');
         setProducts(response.data); 
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -35,7 +36,7 @@ const Lastest = () => {
             <h2 className="title title_lg">Latest Arrival</h2>
             <p className="desc desc_lg">Showing our latest arrival on this summer</p>
             <div className="latest__cards">
-                {products.map((item,index)=>(
+                {products.map((item:ProductApiItem,index:number)=>(
                     <ProductCard 
                     key={`latest${index}`}
                     id={item.id_products}

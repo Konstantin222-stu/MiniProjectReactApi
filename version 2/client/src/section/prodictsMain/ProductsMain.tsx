@@ -1,17 +1,18 @@
 import ProductCard from '../../components/productCard/ProductCard'
 import { useEffect, useState } from 'react'
 import { $host } from '../../http/handlerApi'
+import type { ProductApiItem } from '../../types/products.type'
 
-const ProductsMain = () => {
-    const [category, setCategory] = useState()
-    const [isLoading, setIsLoading] = useState(true)
-    const [products, setProducts] = useState([])
+const ProductsMain: React.FC = () => {
+    const [category, setCategory] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [products, setProducts] = useState<ProductApiItem[]>([])
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadData = async (): Promise<void> => {
         setIsLoading(true);
         try {
-            const response = await $host('product/');
+            const response = await $host.get<ProductApiItem[]>('product/');
             setProducts(response.data); 
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
@@ -29,10 +30,15 @@ const ProductsMain = () => {
     }
     
 
-    const choiseCategory = (e) => {
+    const choiseCategory = (e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault()
-        setCategory(e.target.text)
+        const target = e.target as HTMLAnchorElement
+        setCategory(target.textContent || "" )
     }
+
+    const filteredProducts = category 
+        ? products.filter(item => item.category === category)
+        : products
     
   return (
     <div className="product">
@@ -48,18 +54,17 @@ const ProductsMain = () => {
                 </div>
             </span>
             <div className="product__cards">
-                {products.map((item,index)=>(
-                    !category || item.category === category) && (
+                {filteredProducts.map((item: ProductApiItem, index: number) => (
                     <ProductCard 
-                    key={`productMain${index}`}
-                    id={item.id_products}
-                    src={item.image} 
-                    title={item.title} 
-                    price={item.price}
-                    size={item.size}
-                    reviews={item.reviews}
-                    stars={item.stars}
-                    tags={item.tags}
+                        key={`productMain${index}`}
+                        id={item.id_products}
+                        src={item.image} 
+                        title={item.title} 
+                        price={item.price}
+                        size={item.size}
+                        reviews={item.reviews}
+                        stars={item.stars}
+                        tags={item.tags}
                     />
                 ))}
             </div>
