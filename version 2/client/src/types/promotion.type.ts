@@ -23,7 +23,7 @@ export interface FormattedTime{
 }
 
 export interface PromotionItem {
-    id: number;
+    id_promotion: number;
     subdesc: string;
     title: string;
     desc: string;
@@ -32,9 +32,29 @@ export interface PromotionItem {
     link: string;
     timeLeft: number; 
     image: string;
-    time?: Date; 
+    time: string; 
 }
 
 export interface PromotionResponse {
     data: PromotionItem[];
+}
+
+export interface PromotionFormData{
+    title: string;
+    subdesc: string;
+    desc: string;
+    price: string;
+    sale: string;
+    link: string;
+    time: string;
+}
+
+export interface EditPromotionFormData{
+    title: string;
+    price: string;
+    subdesc: string;
+    desc: string;
+    sale: string;
+    link: string;
+    time: string;
 }

@@ -1,32 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
 import { $authHost } from '../../http/handlerApi';
 import Modal from '../../components/modal/Modal';
 import PromotionAdminCard from '../../components/promotionAdmin/PromotionAdminCard';
+import type { EditPromotionFormData, PromotionFormData, PromotionItem } from '../../types/promotion.type';
 
-const PromotionAdmin = () => {
-    const [loading, setLoading] = useState(false);
-    const [promotion, setPromotion] = useState([]);
-    const [formData, setFormData] = useState({
+const PromotionAdmin:React.FC = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [promotion, setPromotion] = useState<PromotionItem[]>([]);
+    const [formData, setFormData] = useState<PromotionFormData>({
         title: '', subdesc: '', desc: '', price: '', sale: '', link: '', time: ''
       });
-    const [image, setImage] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPromotion, setEditingPromotion] = useState(null);
-    const [editFormData, setEditFormData] = useState({
+    const [image, setImage] = useState<File | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [editingPromotion, setEditingPromotion] = useState<PromotionItem | null>(null);
+    const [editFormData, setEditFormData] = useState<EditPromotionFormData>({
         title: '', subdesc: '', desc: '', price: '',
         sale: '', link: '', time: ''
     });
-    const [editImage, setEditImage] = useState(null);
+    const [editImage, setEditImage] = useState<File | null>(null);
 
     useEffect(() => {
         loadData();
     }, []);
 
 
-    const loadData = async () => {
+    const loadData = async (): Promise<void> => {
         setLoading(true);
         try {
-            const response = await $authHost.get('promotions/');
+            const response = await $authHost.get<PromotionItem[]>('promotions/');
             setPromotion(response.data);
         } catch (error) {
             console.error('Ошибка загрузки:', error);
@@ -35,14 +36,14 @@ const PromotionAdmin = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:FormEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
         setLoading(true);
 
         try {
             const formDataToSend = new FormData();
             Object.keys(formData).forEach(key => {
-                formDataToSend.append(key, formData[key]);
+                formDataToSend.append(key, formData[key as keyof PromotionFormData]);
             });
             if (image) formDataToSend.append('image', image);
 
@@ -62,7 +63,7 @@ const PromotionAdmin = () => {
         }
     };
 
-    const editPromotion = (id) => {
+    const editPromotion = (id:number): void => {
         const promotionToEdit = promotion.find( promotion => promotion.id_promotion === id);
         if (promotionToEdit) {
             setEditingPromotion(promotionToEdit);
@@ -79,14 +80,15 @@ const PromotionAdmin = () => {
         }
     }
 
-    const handleEdit = async (e) => {
+    const handleEdit = async (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         try {
+            if (!editingPromotion) return;
             const formDataToSend = new FormData();
             
             Object.keys(editFormData).forEach(key => {
-                formDataToSend.append(key, editFormData[key]);
+                formDataToSend.append(key, editFormData[key as keyof EditPromotionFormData]);
             });
             
             if (editImage) {
@@ -114,6 +116,24 @@ const PromotionAdmin = () => {
         setEditImage(null);
     }
 
+    const handleInputChange = (
+        e:ChangeEvent<HTMLInputElement>,
+        setter: React.Dispatch<React.SetStateAction<any>>,
+        formData: any
+    ):void =>{
+        const { name, value } = e.target;
+        setter({ ...formData, [name]: value });
+    }
+
+    const handleFileChange = (
+        e:ChangeEvent<HTMLInputElement>,
+        setter: React.Dispatch<React.SetStateAction<File | null>>
+    ): void =>{
+        if(e.target.files && e.target.files[0]){
+            setter(e.target.files[0])
+        }
+    }
+
     if (loading && promotion.length === 0) {
         return <div className="loading">Загрузка...</div>;
     }
@@ -133,8 +153,9 @@ const PromotionAdmin = () => {
             <div>
                 <h2>Акция</h2>
                 <div style={{ border: '1px solid #ddd', padding: '15px', margin: '10px 0', display: "flex", flexWrap: "wrap" }}>
-                    {promotion.map((item, index) => (
+                    {promotion.map((item: PromotionItem,) => (
                         <PromotionAdminCard 
+                            key={item.id_promotion}
                             subdesc={item.subdesc} 
                             src={item.image} 
                             title={item.title}
@@ -156,7 +177,7 @@ const PromotionAdmin = () => {
                                     type="text"
                                     placeholder="Название"
                                     value={editFormData.title}
-                                    onChange={(e) => setEditFormData({...editFormData, title: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -164,7 +185,7 @@ const PromotionAdmin = () => {
                                     type="text"
                                     placeholder="Надзаголовок"
                                     value={editFormData.subdesc}
-                                    onChange={(e) => setEditFormData({...editFormData, subdesc: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -172,7 +193,7 @@ const PromotionAdmin = () => {
                                     type="text"
                                     placeholder="Описание"
                                     value={editFormData.desc}
-                                    onChange={(e) => setEditFormData({...editFormData, desc: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -180,21 +201,21 @@ const PromotionAdmin = () => {
                                     type="number"
                                     placeholder="Цена"
                                     value={editFormData.price}
-                                    onChange={(e) => setEditFormData({...editFormData, price: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
                                     placeholder="Цена со скидкой"
                                     value={editFormData.sale}
-                                    onChange={(e) => setEditFormData({...editFormData, sale: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="text"
                                     placeholder="Ссылка на товар"
                                     value={editFormData.link}
-                                    onChange={(e) => setEditFormData({...editFormData, link: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -202,13 +223,13 @@ const PromotionAdmin = () => {
                                     type="text"
                                     placeholder="2025-10-13 14:30:00"
                                     value={editFormData.time}
-                                    onChange={(e) => setEditFormData({...editFormData, time: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="file"
-                                    onChange={(e) => setEditImage(e.target.files[0])}
+                                    onChange={(e) => handleFileChange(e, setEditImage)}
                                     style={{ margin: '5px' }}
                                 />
                                 <button type="submit" disabled={loading}>
