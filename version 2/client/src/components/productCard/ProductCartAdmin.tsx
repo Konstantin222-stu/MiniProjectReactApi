@@ -1,17 +1,18 @@
 import React from 'react'
+import type { ProductCartAdminProps } from '../../types/products.type'
 
-const ProductCartAdmin = ({src, title, price, size, reviews, stars, tags, id, edit, deleteP}) => {
+const ProductCartAdmin:React.FC<ProductCartAdminProps> = ({src, title, price, size, reviews, stars, tags, id, edit, deleteP}) => {
   return (
         <div className="product__card" onClick={()=> edit(id)}>
             <div className="tag">
-                {tags.map((item)=>(
+                {tags.map((item: string)=>(
                     item == "SALE" ? <div className="tag_sale" key={item}>SALE</div> : <div className="tag_hot" key={item}>{item}</div>
                 ))}
             </div>
             <img src={'http://localhost:3001/products/' + src} alt="product"></img>
             <div className="product-card__reviews">
                 <div className="product-card__stars">
-                    {Array.from({ length: 5 }, (_, index) => (
+                    {Array.from({ length: 5 }, (_, index: number) => (
                         <img 
                         key={index}
                         src={index < stars ? "/product/star_t.svg" : "/product/star_f.svg"}
@@ -25,11 +26,11 @@ const ProductCartAdmin = ({src, title, price, size, reviews, stars, tags, id, ed
             <div className="product-card__size-price">
                 <p className="price">${price}</p>
                 <div className="product__size">
-                    {size.map((item)=><p className="size desc desc_md" key={item}>{item}</p>)}
+                    {size.map((item: string)=><p className="size desc desc_md" key={item}>{item}</p>)}
                 </div>
             </div>
             <button onClick={
-                (e)=> {
+                (e:React.MouseEvent)=> {
                 e.stopPropagation() 
                 deleteP(id) }
                 } 
