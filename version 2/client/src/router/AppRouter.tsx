@@ -1,10 +1,11 @@
 import {Routes, Route, Navigate} from "react-router-dom"
-import {MAIN_ROUTE} from '../router/path'
+import {MAIN_ROUTE} from './path'
 import {privateRoutes, publicRoutes} from './router'
 import { useAuth } from '../context/AuthorizationContext'
 import PrivateRoute from './PrivateRoute'
+import type { RouteConfig } from "../types/router.type"
 
-function AppRouter() {
+function AppRouter():React.JSX.Element {
   const { admin, loading } = useAuth(); 
 
   if (loading) {
@@ -15,13 +16,13 @@ function AppRouter() {
   
   return (
     <Routes>
-      {publicRoutes.map(({path, Component}) =>
-        <Route key={path} path={path} Component={Component} exact/>
+      {publicRoutes.map(({path, Component}: RouteConfig) =>
+        <Route key={path} path={path} element={<Component />} />
       )}
       
       <Route element={<PrivateRoute />}>
-        {privateRoutes.map(({path, Component}) =>
-          <Route key={path} path={path} Component={Component} exact/>
+        {privateRoutes.map(({path, Component}: RouteConfig) =>
+          <Route key={path} path={path} element={<Component />} />
         )}
       </Route>
       
