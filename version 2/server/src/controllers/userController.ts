@@ -9,6 +9,8 @@ import type { LoginRequestBody,IUserController, CheckUserResponse, LoginResponse
 class UserController implements IUserController {
 
   async checkUser(req: AuthRequest, res: Response, next: NextFunction): Promise<Response| void> {
+    console.log('sssss');
+    
     try {
       
       if (!req.user?.id_user) { 

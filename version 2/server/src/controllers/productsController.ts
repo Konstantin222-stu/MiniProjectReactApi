@@ -5,6 +5,9 @@ import fs from "fs"
 import ApiError from "../error"
 import type {Request, Response, NextFunction} from 'express'
 import type { CreateProductBody, UpdateProductBody } from "../types/products";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class ProductsController {
   async get(req:Request, res:Response, next:NextFunction):Promise<Response | void> {

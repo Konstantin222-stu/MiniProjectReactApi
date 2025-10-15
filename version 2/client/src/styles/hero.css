@@ -1,0 +1,23 @@
+.hero {
+    background-image: url("hero/hero-background.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: #DEECEC;
+}
+.hero__content {
+    
+    
+    display: flex;
+    padding-top: 100px;
+    align-items: center;
+}
+.hero__info .subdesc{
+    margin-bottom: 11px;
+}
+.hero__info .title {
+    margin-bottom: 25px;
+}
+
+.hero__info .desc {
+    margin-bottom: 40px;
+}

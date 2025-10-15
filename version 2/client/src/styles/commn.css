@@ -1,0 +1,93 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    overflow-x: hidden;
+}
+h1, h2, h3, p, a {
+    font-family: "Work Sans", sans-serif;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+}
+
+.wrap {
+    max-width: 1440px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.title{
+    color: #34394C;
+}
+.title_lg{
+    font-size: 50px;
+}
+.title_md{
+    font-size: 22px;
+}
+.title_lt{
+    font-size: 18px;
+}
+
+.desc{
+    color: #6E7489;
+}
+.desc_big{
+    font-size: 25px;
+}
+.desc_lg{
+    font-size: 18px;
+}
+.desc_md{
+    font-size: 16px;
+}
+.desc_lt{
+    font-size: 14px;
+}
+
+.subdesc{
+    font-family: "Outfit", sans-serif;
+    font-size: 20px;
+    color: #589195;
+}
+
+.button{
+    background-color: #589195;
+    color: #FFFFFF;
+    padding: 11px 30px;
+    border-radius: 38px;
+}
+
+.button_lg{
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group input{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 30px;
+    font-size: 16px;
+    border: 1px solid #C4C4C4;
+    border-radius: 8px;
+    outline:none;
+    padding: 0 10px;
+
+}

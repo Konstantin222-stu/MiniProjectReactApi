@@ -34,7 +34,7 @@ const Product = () => {
     <div class="product-info">
         <div class="product-info__content wrap">
             <div class="product-info__img">
-                <img src={product.image} alt="product"></img>
+                <img src={'http://localhost:3001/products/' + product.image} alt="product"></img>
                 <div class="tag">
                     {product.tags.map((item)=>( item == "SALE" ? <div className="tag_sale" key={item}>SALE</div> : <div className="tag_hot" key={item}>{item}</div>))}
                 </div>

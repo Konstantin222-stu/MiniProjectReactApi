@@ -25,7 +25,7 @@ application.use(cors(corsOptions));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-application.use(express.static(path.resolve(__dirname, '../uploads')));
+application.use(express.static(path.resolve(__dirname, 'uploads')));
 application.use(express.json())
 
 application.use(fileUpload({

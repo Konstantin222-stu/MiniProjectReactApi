@@ -2,7 +2,7 @@ import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 're
 import { $authHost } from '../../http/handlerApi';
 import ProductCardAdmin from '../../components/productCard/ProductCartAdmin';
 import Modal from '../../components/modal/Modal';
-import type { EditProductFormData, ProductApiItem, ProductCartAdminProps, ProductFormData } from '../../types/products.type';
+import type { EditProductFormData, ProductApiItem, ProductFormData } from '../../types/products.type';
 
 const ProductAdmin: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -130,12 +130,15 @@ const ProductAdmin: React.FC = () => {
 
     const handleInputChange = (
         e: ChangeEvent<HTMLInputElement>, 
-        setter: React.Dispatch<React.SetStateAction<any>>,
-        formData: any
-    ): void => {
+        setter: React.Dispatch<React.SetStateAction<any>>
+        ): void => {
         const { name, value } = e.target;
-        setter({ ...formData, [name]: value });
-    };
+        setter((prev: any) => ({
+            ...prev,
+            [name]: value
+        }));
+        };
+
 
     const handleFileChange = (
         e: ChangeEvent<HTMLInputElement>,
@@ -167,46 +170,52 @@ const ProductAdmin: React.FC = () => {
                     <h3>Добавить товар</h3>
                     <input
                         type="text"
+                        name="title"
                         placeholder="Название"
                         value={formData.title}
-                        onChange={(e) => handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         required
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="text"
+                        name="desc"
                         placeholder="Описание"
                         value={formData.desc}
-                        onChange={(e) =>  handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         required
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="number"
+                        name="price"
                         placeholder="Цена"
                         value={formData.price}
-                        onChange={(e) => handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="text"
+                        name="category"
                         placeholder="Категория"
                         value={formData.category}
-                        onChange={(e) => handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="number"
+                        name="reviews"
                         placeholder="Кол-во отзывов"
                         value={formData.reviews}
-                        onChange={(e) => handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="number"
+                        name="stars"
                         placeholder="Кол-во звезд"
                         value={formData.stars}
-                        onChange={(e) => handleInputChange(e, setFormData, formData)}
+                        onChange={(e) => handleInputChange(e, setFormData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
@@ -242,46 +251,52 @@ const ProductAdmin: React.FC = () => {
                                 <h3>Изменить товар</h3>
                                 <input
                                     type="text"
+                                    name="title"
                                     placeholder="Название"
                                     value={editFormData.title}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="text"
+                                    name="desc"
                                     placeholder="Описание"
                                     value={editFormData.desc}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
+                                    name="price"
                                     placeholder="Цена"
                                     value={editFormData.price}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="text"
+                                    name="category"
                                     placeholder="Категория"
                                     value={editFormData.category}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
+                                    name="reviews"
                                     placeholder="Кол-во отзывов"
                                     value={editFormData.reviews}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
+                                    name="stars"
                                     placeholder="Кол-во звезд"
                                     value={editFormData.stars}
-                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
+                                    onChange={(e) => handleInputChange(e, setEditFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input

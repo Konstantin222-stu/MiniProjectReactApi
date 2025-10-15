@@ -5,6 +5,10 @@ import fs from "fs"
 import ApiError from "../error"
 import type {Response, Request, NextFunction} from 'express'
 import type {UpdatePromotionBody, CreatePromotionRequest, UpdatePromotionRequest } from "../types/promotion";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class PromotionController {
   async get(req:Request, res:Response, next:NextFunction):Promise<Response | void> {

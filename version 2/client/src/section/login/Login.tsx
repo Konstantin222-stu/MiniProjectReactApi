@@ -1,9 +1,9 @@
-import React, { useState, type ChangeEvent, type FormEvent } from 'react'
+import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
 import { useAuth } from '../../context/AuthorizationContext'; 
 import { useNavigate } from 'react-router-dom';
 import type { LoginCredentials, LoginProps } from '../../types/auth.type';
 
-const Login: React.FC<LoginProps>  = ({close}) => {
+const Login: React.FC<LoginProps> = ({ close }) => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -14,12 +14,20 @@ const Login: React.FC<LoginProps>  = ({close}) => {
         password: ''
     });
 
+    // ✅ Редирект только если уже авторизован
+    useEffect(() => {
+        if (!loading && admin) {
+            navigate('/admin');
+            close();
+        }
+    }, [loading, admin, navigate, close]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e:FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError(null);
         setIsSubmitting(true);
@@ -27,8 +35,9 @@ const Login: React.FC<LoginProps>  = ({close}) => {
         try {
             const result = await login(formData);
             if (result?.success) {
-                navigate('/admin'); 
-                
+                // ✅ Редирект произойдет автоматически в useEffect
+                // когда admin станет true
+                console.log('Login successful, waiting for auth state update...');
             } else {
                 setError(result?.error || 'Ошибка авторизации');
             }
@@ -40,10 +49,13 @@ const Login: React.FC<LoginProps>  = ({close}) => {
         }
     };
 
+    // ✅ Если уже авторизован, не показываем форму
     if (!loading && admin) {
-        navigate('/admin');
-        close();
-        return null;
+        return (
+            <div className="login-container">
+                <div className="loading">Перенаправление в админ панель...</div>
+            </div>
+        );
     }
     
     return (
@@ -86,7 +98,7 @@ const Login: React.FC<LoginProps>  = ({close}) => {
                 </button>
             </form>
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;

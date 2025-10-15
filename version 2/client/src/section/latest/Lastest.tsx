@@ -14,7 +14,7 @@ const Lastest:React.FC = () => {
       setIsLoading(true);
       try {
         const response = await $host.get<ProductApiItem[]>('product/');
-        setProducts(response.data); 
+        setProducts(response.data || []); 
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
         setProducts([]);
@@ -29,6 +29,11 @@ const Lastest:React.FC = () => {
   if (isLoading) {
     return <div className="loading">Загрузка...</div>;
   }
+
+  if (!products || !Array.isArray(products)) {
+        console.error('Products is not an array:', products);
+        return <div className="loading">Ошибка загрузки товаров</div>;
+    }
    
   return (
     <div className="latest">

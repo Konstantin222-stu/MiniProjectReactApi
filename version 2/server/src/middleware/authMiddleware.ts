@@ -6,6 +6,8 @@ import ApiError from '../error';
 
 export default function () {
     return async function (req: AuthRequest , res: Response, next: NextFunction) {
+        console.log('ssss');
+        
         if (req.method === "OPTIONS") {
             return next();
         }

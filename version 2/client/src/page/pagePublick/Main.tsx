@@ -33,8 +33,6 @@ const Main: React.FC = () => {
     return <div className="loading">Загрузка...</div>;
   }
 
-  console.log(promotion);
-
   const currentPromotion: PromotionItem | undefined = promotion[0];
   const showPromotion: boolean =Boolean(currentPromotion && currentPromotion.timeLeft > 0);
 

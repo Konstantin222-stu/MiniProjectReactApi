@@ -3,18 +3,18 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { $host } from '../../http/handlerApi';
-import type { ProductItem } from '../../types/products.type';
+import type { ProductApiItem } from '../../types/products.type';
 
 const Product: React.FC = () => {
     const { id } = useParams<{id:string}>();
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [product, setProduct] = useState<ProductItem | null>(null);
+    const [product, setProduct] = useState<ProductApiItem | null>(null);
 
     useEffect(() => {
         const loadData = async (): Promise<void> => {
             setIsLoading(true);
             try {
-                const response = await $host.get<ProductItem>(`product/${id}`);
+                const response = await $host.get<ProductApiItem>(`product/${id}`);
                 setProduct(response.data); 
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
@@ -41,7 +41,7 @@ const Product: React.FC = () => {
     <div className="product-info">
         <div className="product-info__content wrap">
             <div className="product-info__img">
-                <img src={product.image} alt="product"></img>
+                <img src={'http://localhost:3001/products/' + product.image} alt="product"></img>
                 <div className="tag">
                     {product.tags.map((item: string)=>( item == "SALE" ? <div className="tag_sale" key={item}>SALE</div> : <div className="tag_hot" key={item}>{item}</div>))}
                 </div>

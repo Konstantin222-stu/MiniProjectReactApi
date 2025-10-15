@@ -15,10 +15,13 @@ async function loadRoutes() {
       file !== 'index.ts' && file.endsWith('.ts')
     );
 
+
     for (const file of routerFiles) {
       const routeModule = await import(`./${file}`);
       if (routeModule.default) {
-        router.use(routeModule.default);
+        const routeName = file.replace('Router.ts', '').replace('.ts', '');
+        const prefix = `/${routeName === 'index' ? '' : routeName}`;
+        router.use(prefix, routeModule.default);
       }
     }
   } catch (error) {

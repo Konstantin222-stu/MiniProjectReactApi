@@ -5,6 +5,6 @@ import authMiddleware from '../middleware/authMiddleware';
 const promotionRouter = Router();
 
 promotionRouter.get('/', promotionController.get)
-promotionRouter.put('/:id',authMiddleware, promotionController.put)
+promotionRouter.put('/:id',authMiddleware(), promotionController.put)
 
 export default promotionRouter
