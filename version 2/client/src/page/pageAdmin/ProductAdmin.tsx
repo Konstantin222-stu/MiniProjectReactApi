@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
 import { $authHost } from '../../http/handlerApi';
 import ProductCardAdmin from '../../components/productCard/ProductCartAdmin';
 import Modal from '../../components/modal/Modal';
+import type { EditProductFormData, ProductApiItem, ProductCartAdminProps, ProductFormData } from '../../types/products.type';
 
-const ProductAdmin = () => {
-    const [loading, setLoading] = useState(false);
-    const [products, setProducts] = useState([]);
-    const [formData, setFormData] = useState({
+const ProductAdmin: React.FC = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [products, setProducts] = useState<ProductApiItem[]>([]);
+    const [formData, setFormData] = useState<ProductFormData>({
         title: '', price: '', category: '', desc: '',
         size: '[]', tags: '[]', reviews: '0', stars: '0'
     });
-    const [image, setImage] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    const [editingProduct, setEditingProduct] = useState(null);
-    const [editFormData, setEditFormData] = useState({
+    const [image, setImage] = useState<File | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [editingProduct, setEditingProduct] = useState<ProductApiItem | null>(null);
+    const [editFormData, setEditFormData] = useState<EditProductFormData>({
         title: '', price: '', category: '', desc: '',
         reviews: '0', stars: '0'
     });
-    const [editImage, setEditImage] = useState(null);
+    const [editImage, setEditImage] = useState<File | null>(null);
 
     useEffect(() => {
         loadData();
     }, []);
 
-    const loadData = async () => {
+    const loadData = async ():Promise<void> => {
         setLoading(true);
         try {
-            const response = await $authHost.get('product/');
+            const response = await $authHost.get<ProductApiItem[]>('product/');
             setProducts(response.data);
         } catch (error) {
             console.error('Ошибка загрузки:', error);
@@ -36,14 +36,14 @@ const ProductAdmin = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setLoading(true);
 
         try {
             const formDataToSend = new FormData();
             Object.keys(formData).forEach(key => {
-                formDataToSend.append(key, formData[key]);
+                formDataToSend.append(key, formData[key as keyof ProductFormData]);
             });
             if (image) formDataToSend.append('image', image);
 
@@ -64,13 +64,13 @@ const ProductAdmin = () => {
         }
     };
 
-    const editProduct = (id) => {
+    const editProduct = (id: number) => {
         const productToEdit = products.find(product => product.id_products === id);
         if (productToEdit) {
             setEditingProduct(productToEdit);
             setEditFormData({
                 title: productToEdit.title || '',
-                price: productToEdit.price || '',
+                price: productToEdit.price?.toString() || '',
                 category: productToEdit.category || '',
                 desc: productToEdit.desc || '',
                 reviews: productToEdit.reviews?.toString() || '0',
@@ -80,14 +80,16 @@ const ProductAdmin = () => {
         }
     }
 
-    const handleEdit = async (e) => {
+    const handleEdit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         try {
+            if (!editingProduct) return;
+        
             const formDataToSend = new FormData();
-            
+        
             Object.keys(editFormData).forEach(key => {
-                formDataToSend.append(key, editFormData[key]);
+                formDataToSend.append(key, editFormData[key as keyof EditProductFormData]);
             });
             
             if (editImage) {
@@ -109,13 +111,13 @@ const ProductAdmin = () => {
         }
     }
 
-    const closeModal = () => {
+    const closeModal = ():void => {
         setIsModalOpen(false);
         setEditingProduct(null);
         setEditImage(null);
     }
 
-    const deleteProduct = async(id) =>{
+    const deleteProduct = async(id:number):Promise<void> =>{
       if (window.confirm('Удалить товар?')) {
             try {
               await $authHost.delete(`product/${id}`);
@@ -124,6 +126,24 @@ const ProductAdmin = () => {
               console.error('Ошибка удаления:', error);
             }
       }
+    }
+
+    const handleInputChange = (
+        e: ChangeEvent<HTMLInputElement>, 
+        setter: React.Dispatch<React.SetStateAction<any>>,
+        formData: any
+    ): void => {
+        const { name, value } = e.target;
+        setter({ ...formData, [name]: value });
+    };
+
+    const handleFileChange = (
+        e: ChangeEvent<HTMLInputElement>,
+        setter: React.Dispatch<React.SetStateAction<File | null>>
+    ):void =>{
+        if(e.target.files && e.target.files[0]){
+            setter(e.target.files[0])
+        }
     }
 
     if (loading && products.length === 0) {
@@ -149,7 +169,7 @@ const ProductAdmin = () => {
                         type="text"
                         placeholder="Название"
                         value={formData.title}
-                        onChange={(e) => setFormData({...formData, title: e.target.value})}
+                        onChange={(e) => handleInputChange(e, setFormData, formData)}
                         required
                         style={{ margin: '5px', padding: '5px' }}
                     />
@@ -157,7 +177,7 @@ const ProductAdmin = () => {
                         type="text"
                         placeholder="Описание"
                         value={formData.desc}
-                        onChange={(e) => setFormData({...formData, desc: e.target.value})}
+                        onChange={(e) =>  handleInputChange(e, setFormData, formData)}
                         required
                         style={{ margin: '5px', padding: '5px' }}
                     />
@@ -165,33 +185,33 @@ const ProductAdmin = () => {
                         type="number"
                         placeholder="Цена"
                         value={formData.price}
-                        onChange={(e) => setFormData({...formData, price: e.target.value})}
+                        onChange={(e) => handleInputChange(e, setFormData, formData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="text"
                         placeholder="Категория"
                         value={formData.category}
-                        onChange={(e) => setFormData({...formData, category: e.target.value})}
+                        onChange={(e) => handleInputChange(e, setFormData, formData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="number"
                         placeholder="Кол-во отзывов"
                         value={formData.reviews}
-                        onChange={(e) => setFormData({...formData, reviews: e.target.value})}
+                        onChange={(e) => handleInputChange(e, setFormData, formData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="number"
                         placeholder="Кол-во звезд"
                         value={formData.stars}
-                        onChange={(e) => setFormData({...formData, stars: e.target.value})}
+                        onChange={(e) => handleInputChange(e, setFormData, formData)}
                         style={{ margin: '5px', padding: '5px' }}
                     />
                     <input
                         type="file"
-                        onChange={(e) => setImage(e.target.files[0])}
+                        onChange={(e) => handleFileChange(e,setImage)}
                         style={{ margin: '5px' }}
                     />
                     <button type="submit" disabled={loading}>
@@ -200,7 +220,7 @@ const ProductAdmin = () => {
                 </form>
               
                 <div style={{ border: '1px solid #ddd', padding: '15px', margin: '10px 0', display: "flex", flexWrap: "wrap" }}>
-                    {products.map((item, index) => (
+                    {products.map((item: ProductApiItem) => (
                         <ProductCardAdmin
                             key={`productMain${item.id_products}`} 
                             id={item.id_products}
@@ -224,7 +244,7 @@ const ProductAdmin = () => {
                                     type="text"
                                     placeholder="Название"
                                     value={editFormData.title}
-                                    onChange={(e) => setEditFormData({...editFormData, title: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -232,7 +252,7 @@ const ProductAdmin = () => {
                                     type="text"
                                     placeholder="Описание"
                                     value={editFormData.desc}
-                                    onChange={(e) => setEditFormData({...editFormData, desc: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     required
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
@@ -240,33 +260,33 @@ const ProductAdmin = () => {
                                     type="number"
                                     placeholder="Цена"
                                     value={editFormData.price}
-                                    onChange={(e) => setEditFormData({...editFormData, price: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="text"
                                     placeholder="Категория"
                                     value={editFormData.category}
-                                    onChange={(e) => setEditFormData({...editFormData, category: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
                                     placeholder="Кол-во отзывов"
                                     value={editFormData.reviews}
-                                    onChange={(e) => setEditFormData({...editFormData, reviews: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="number"
                                     placeholder="Кол-во звезд"
                                     value={editFormData.stars}
-                                    onChange={(e) => setEditFormData({...editFormData, stars: e.target.value})}
+                                    onChange={(e) => handleInputChange(e, setEditFormData, editFormData)}
                                     style={{ margin: '5px', padding: '5px' }}
                                 />
                                 <input
                                     type="file"
-                                    onChange={(e) => setEditImage(e.target.files[0])}
+                                    onChange={(e) => handleFileChange(e,setEditImage)}
                                     style={{ margin: '5px' }}
                                 />
                                 <button type="submit" disabled={loading}>

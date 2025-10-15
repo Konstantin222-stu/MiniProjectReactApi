@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { $authHost } from '../../http/handlerApi';
 
-const Admin = () => {
+const Admin:React.FC = () => {
   return(
     <div className=""></div>
   )

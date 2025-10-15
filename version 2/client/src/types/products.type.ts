@@ -43,3 +43,24 @@ export interface ProductCartAdminProps extends ProductBaseProps {
     edit: (id: number) => void;
     deleteP: (id: number) => void;
 }
+
+export interface ProductFormData{
+    title: string;
+    price: string;
+    category: string;
+    desc: string;
+    size: string;
+    tags: string;
+    reviews: string;
+    stars: string;
+}
+
+export interface EditProductFormData{
+    title: string;
+    price: string;
+    category: string;
+    desc: string;
+    reviews: string;
+    stars: string;
+}
+
